@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class BusinessHome : System.Web.UI.Page
+{
+    public static string constr = ConfigurationManager.ConnectionStrings["Shopping_platformConnectionString"].ConnectionString;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)  
+        {
+            SqlConnection conn = new SqlConnection(constr);
+            conn.Open();
+            string SqlID = $"select * from [shop_table] where shopID='{Request.Cookies["UID"].Value.Trim()}'";
+            SqlDataAdapter tempData = new SqlDataAdapter(SqlID, conn);
+            DataTable tempTable = new DataTable();
+            tempData.Fill(tempTable);
+            if (tempTable.Rows.Count > 0)
+            {
+                this.Label2.Text = "Shop ID:" + tempTable.Rows[0]["shopID"].ToString() ;
+                this.Label3.Text = "Shop Name:" + tempTable.Rows[0]["shopName"].ToString();
+                this.Label3.Text = tempTable.Rows[0]["shopAddress"].ToString();
+            }
+        this.Label2.Text = "Shop ID:" + tempTable.Rows[0]["shopID"].ToString();
+        this.Label3.Text = "Shope Name:" + tempTable.Rows[0]["shopName"].ToString();
+        this.Label6.Text = tempTable.Rows[0]["shopAddress"].ToString();
+        }
+    }
+}

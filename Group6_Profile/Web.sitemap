@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap>
+	<siteMapNode url="" title=""  description="">
+		<siteMapNode url="~/BusinessHome.aspx" title="Profile"  description="BusinessHome" />
+		<siteMapNode url="~/OrderManage.aspx" title="Order"  description="OrderManage" />
+		<siteMapNode url="~/WaresManage.aspx" title="Product"  description="WaresManage" />
+		<siteMapNode url="~/PurchaseManage.aspx" title="Stock"  description="PurchaseManage" />
+		<siteMapNode url="~/StockManage.aspx" title="Inventory"  description="StockManage" />
+		<!--<siteMapNode url="~/SaleManage.aspx" title="Sales Management"  description="SaleManage" />-->
+		<siteMapNode url="~/AchievementManage.aspx" title="Achievement"  description="AchievementManage" />
+		<siteMapNode url="~/ModifyInformation.aspx" title="Shop"  description="ModifyInformation" />
+	</siteMapNode>
+</siteMap>
