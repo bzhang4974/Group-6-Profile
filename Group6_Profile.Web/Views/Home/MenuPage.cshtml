@@ -1,0 +1,188 @@
+﻿@using Group6_Profile.DTO.DTO;
+@model List<MenuDTO>
+@{
+    <link href="~/layui/css/xadmin.css" rel="stylesheet" />
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    LoginUserDTO user = this.ViewBag.user as LoginUserDTO;
+    <script src="~/layui/xadmin.js"></script>
+}
+<script>
+    // is remeber tab
+    //     var is_remember = false;
+</script>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+
+        <div style=" display: flex;">
+
+            <div style="color: white; color: white; margin-left: 44%; margin-top: 8px; font-size: 30px; ">shop system</div>
+        </div>
+
+
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    @user.UserName
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a style="color:black" href="javascript:;" onclick="changePassword()">Change Password</a></dd>
+
+                    <dd>  <a style="color:black" href="/Login/Logout">Logout</a> </dd>
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                @if (Model != null)
+                {
+                    foreach (var item in Model.Where(m => string.IsNullOrEmpty(m.OrderIndex) == false
+                    ))
+                    {
+                        if (item.OrderIndex.Length == 2)
+                        {
+                            <li class="layui-nav-item layui-nav-itemed">
+                                <a class="" href="@(string.IsNullOrEmpty(item.Url) ? "javascript:;" : item.Url)">@(item.Name)</a>
+                                @{
+                                    List<MenuDTO> list = Model.Where(m => m.OrderIndex.Length > 2 && m.OrderIndex.StartsWith(item.OrderIndex)).ToList();
+                                    if (list.Any())
+                                    {
+                                        <dl class="layui-nav-child">
+                                            @foreach (var temp in list)
+                                            {
+                                                <dd>
+                                                    <a onclick="xadmin.add_tab('@temp.Name','@temp.Url')">
+                                                        @(temp.Name)
+                                                    </a>
+                                                </dd>
+                                            }
+                                        </dl>
+                                    }
+                                }
+                            </li>
+                        }
+
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+            <ul class="layui-tab-title">
+                <li class="home " style="display: none;">
+                    <i class="layui-icon">&#xe68e;</i>Desktop
+                </li>
+            </ul>
+            <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+                <dl>
+                    <dd data-type="this">Close Current</dd>
+                    <dd data-type="other">Close Other</dd>
+                    <dd data-type="all">Close All</dd>
+                </dl>
+            </div>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <iframe frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                </div>
+            </div>
+            <div id="tab_show"></div>
+        </div>
+    </div>
+
+</div>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+
+    function TeacherInfor(id) {
+        layer.open({
+            type: 2
+            , title: 'UserInfor'
+            , content: '/Home/TeacherInfor?Id=' + @user.Id
+                                        , maxmin: true
+            , shadeClose: true
+            , area: ['550px', '550px']
+            , btn: ['Confirm', 'Cancle']
+            , yes: function (index, layero) {
+
+                var iframeWindow = window['layui-layer-iframe' + index]
+                    , submitID = 'LAY-user-front-submit'
+                    , submit = layero.find('iframe').contents().find('#' + submitID);
+                //
+                iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+
+                    //
+                    $.ajax({
+                        url: "/Home/SaveTeacherInfor", dataType: "json", type: "post", data: data.field,
+                        success: function (res) {
+                            if (res.Status) {
+                                layer.msg('Susscess');
+                                layer.close(index); 
+                            }
+                            else {
+                                layer.msg("Error：" + res.Msg);
+                            }
+                        },
+                        error: function () {
+                            layer.msg("Net Error");
+                        }
+                    });
+                    return false;
+                });
+                submit.trigger('click');
+            }
+        });
+
+    }
+    function changePassword() {
+        layer.open({
+            type: 2
+            , title: 'Change Password'
+            , content: '/Home/ChangePassword'
+            , maxmin: true
+            , shadeClose: true
+            , area: ['450px', '350px']
+            , btn: ['Confirm', 'Cancle']
+            , yes: function (index, layero) {
+
+                var iframeWindow = window['layui-layer-iframe' + index]
+                    , submitID = 'LAY-user-front-submit'
+                    , submit = layero.find('iframe').contents().find('#' + submitID);
+                //
+                iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+
+                    //
+                    $.ajax({
+                        url: "/Home/SavePassword", dataType: "json", type: "post", data: data.field,
+                        success: function (res) {
+                            if (res.success) {
+                                layer.msg('Change Password Success');
+                                layer.close(index); 
+                                //重新登陆
+                                location.href = "/Home/Logout";
+                            }
+                            else {
+                                layer.msg("Error：" + res.msg);
+                            }
+                        },
+                        error: function () {
+                            layer.msg("Net Error");
+                        }
+                    });
+                    return false;
+                });
+                submit.trigger('click');
+            }
+        });
+    }
+</script>
