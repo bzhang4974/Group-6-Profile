@@ -14,7 +14,7 @@ namespace Group6_Profile.Service
     /// </summary>
     public class AutoMapperProfile : Profile
     {
-        /// <summary>
+        /// <summary> 
         ///  
         /// </summary>
         public AutoMapperProfile()
