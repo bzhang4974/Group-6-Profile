@@ -1,0 +1,65 @@
+﻿<html class="x-admin-sm" style="height:100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>Backend login</title>
+    <link href="~/layui/css/login.css" rel="stylesheet" />
+    <link href="~/layui/css/xadmin.css" rel="stylesheet" />
+</head>
+<body class="login-bg" style="height:100%;">
+    <div class="login layui-anim layui-anim-up">
+
+        <div class="message" style="font-size:18px">Login</div>
+        <div id="darkbannerwrap"></div>
+        <form method="post" class="layui-form">
+            <input name="account" placeholder="user account" type="text" lay-verify="required" class="layui-input">
+            <hr class="hr15">
+            <input name="password" lay-verify="required" placeholder="password" type="password" class="layui-input">
+            <hr class="hr15">
+         
+            <input value="Login" lay-submit lay-filter="login"   type="submit">
+
+          
+            <hr class="hr15">
+            <input value="Register" lay-submit lay-filter="regist"  type="submit">
+
+            <hr class="hr15">
+            <input value="Forget Password" lay-submit lay-filter="forget" type="submit">
+            <hr class="hr20">
+        </form>
+    </div>
+
+    <script>
+        $(function () {
+            layui.use('form', function () {
+                var form = layui.form;
+                form.on('submit(login)', function (data) {
+                    $.ajax({
+                        url: "/Login/LoginCheck", dataType: "json", type: "post", data: data.field,
+                        success: function (res) {
+                            if (res.status) {
+
+                                location.href = "/Home/Index";
+                            }
+                            else {
+                                layer.msg("Error：" + res.msg);
+                            }
+                        },
+                        error: function () {
+                            layer.msg("Net Error");
+                        }
+                    });
+                    return false;
+                });
+                form.on('submit(regist)', function (data) {
+                    location.href = "/Login/Sign";
+                    return false;
+                });
+                form.on('submit(forget)', function (data) {
+                    location.href = "/Login/Forget";
+                    return false;
+                });
+            });
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+﻿@using Group6_Profile.DTO.DTO;
+@model MenuAddDTO
+@{
+    ViewBag.Title = "EditAsync";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IList<RoleDTO> roles = this.ViewBag.Roles as IList<RoleDTO>;
+    string[] menuroles = Model.RoleIds == null ? new string[0] : Model.RoleIds.Split(',');
+}
+<style>
+    .layui-form-label {
+        width: 80px;
+    }
+</style>
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 50px 50px 0 0;width: 68%; margin-left: 15%;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">OrderIndex</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="Id" value="@(Model?.Id)" autocomplete="off" class="layui-input">
+            <input type="text" name="OrderIndex" style="width:100%" value="@(Model?.OrderIndex)" placeholder="Please Enter OrderIndex" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Name</label>
+        <div class="layui-input-block">
+            <input type="text" name="Name" style="width:100%" value="@(Model?.Name)" lay-verify="required" placeholder="Please Enter Name" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Code</label>
+        <div class="layui-input-block">
+            <input type="text" name="Code" style="width:100%" value="@(Model?.Code)" lay-verify="required" placeholder="Please Enter Code" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Url</label>
+        <div class="layui-input-block">
+            <input type="text" name="Url" style="width:100%" value="@(Model?.Url)" placeholder="Please Enter Url" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Describe</label>
+        <div class="layui-input-block">
+            <input type="text" name="Describe" style="width:100%" value="@(Model?.Describe)" lay-verify="required" placeholder="Please Enter Describe" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:90px">IsFirstPage</label>
+        <div class="layui-input-block">
+            <input type="checkbox" class="layui-unselect layui-form-switch layui-form-onswitch" checked="@(Model?.IsFirstPage==true)" name="IsFirstPage" lay-skin="switch"
+                   lay-text="yes|no">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:90px">IsDelete</label>
+        <div class="layui-input-block">
+            <input type="checkbox" class="layui-unselect layui-form-switch layui-form-onswitch" checked="@(Model?.IsDelete==true)" name="IsDelete" lay-skin="switch"
+                   lay-text="yes|no">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:90px">Select Role</label>
+        <div class="layui-input-block">
+            @foreach(var role in roles)
+            {
+                <input style="margin-left:10px" type="checkbox" checked="@(Array.IndexOf(menuroles, role.Id + "") >= 0)" lay-skin="primary" name="menusRoles" value="@role.Id" title="@role.Name">
+            }
+        
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="Confirm">
+    </div>
+</div>
+
+<script>
+    $(function () {
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form;
+
+        });
+
+    })
+</script>

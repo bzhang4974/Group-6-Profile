@@ -1,0 +1,286 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height: 52px;padding: 8px;">
+            <div class="layui-form-item">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">Name</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Name" placeholder="Please Enter Name" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-card-body">
+            <table id="infroSearch" lay-filter="infroSearchFilter"></table>
+            <script type="text/html" id="test-table-switchTpl">
+                <input type="checkbox" name="isDelete" lay-skin="switch" lay-text="yes|no" lay-filter="test-table-sexDemo"
+                       value="{{ d.isDelete }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}" {{ d.isDelete ==1?'checked':''}}>
+
+            </script>
+            <script type="text/html" id="test-table-switchFirstPage">
+
+                <input type="checkbox" name="isDelete" lay-skin="switch" lay-text="yes|no" lay-filter="test-table-sexDemo"
+                  value="{{ d.isFirstPage }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}"{{ d.isFirstPage ==1?'checked':''}}>
+            </script>
+        </div>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                  <button class="layui-btn layui-btn-sm" lay-event="add">Add</button>
+                  <button class="layui-btn layui-btn-sm" lay-event="update">Edit</button>
+                   <button class="layui-btn layui-btn-sm" lay-event="refresh">Refresh</button>
+                  <button class="layui-btn layui-btn-sm" lay-event="delete">Delete</button>
+
+            </div>
+        </script>
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['laydate', 'laypage', 'layer', 'form', 'table', 'carousel', 'upload', 'element', 'slider'], function () {
+        var table = layui.table;
+        var form = layui.form
+        layer = layui.layer;  
+        
+        table.render({
+            elem: '#infroSearch'
+            , height: 'full-150'
+            , innerWidth: 'full-20'
+            , toolbar: '#toolbarDemo'  
+            , url: '/MenuManage/GetUserData'
+
+            , page: true  
+            , cols: [[ 
+                { type: 'radio', width: '5%' },
+                , { field: 'id', title: 'id', hide: true }
+                , { field: 'orderIndex', width: '5%', title: 'orderIndex' }
+                , { field: 'name', width: '10%', title: 'name' }
+                , { field: 'code', width: '10%', title: 'code' }
+                , { field: 'url', width: '20%', title: 'url' }
+                , { field: 'describe', width: '20%', title: 'describe' }
+                , {
+                    field: 'createDateTime', width: '10%', title: 'createDateTime', templet: function (d) {
+                        if (d.createDateTime != null && d.createDateTime != "") {
+                            return layui.util.toDateString(d.createDateTime, 'yyyy-MM-dd HH:mm');
+                        } else { return ""; }
+                    }
+                }, {
+                    field: 'updateDateTime', width: '10%', title: 'updateDateTime', templet: function (d) {
+                        if (d.updateDateTime != null && d.updateDateTime != "") {
+                            return layui.util.toDateString(d.updateDateTime, 'yyyy-MM-dd HH:mm');
+                        } else { return ""; }
+                    }
+                }
+                , { field: 'isFirstPage', width: '5%', title: 'isFirstPage', templet: '#test-table-switchFirstPage', unresize: true }
+                , { field: 'isDelete', width: '5%', title: 'isDelete', templet: '#test-table-switchTpl', unresize: true }
+            ]],
+        });
+        var tablefield = {};
+        
+        form.on('submit(LAY-user-front-search)', function (data) {
+            tablefield = data.field;
+           
+            table.reload('infroSearch', {
+                where: tablefield,
+                page: {
+                    curr: 1 
+                }
+            });
+        });
+       
+        table.on('toolbar(infroSearchFilter)', function (obj) {
+
+            var checkStatus = table.checkStatus(obj.config.id),
+                data = checkStatus.data; 
+            switch (obj.event) {
+                case 'add':
+                    add();
+                    break;
+                case 'update':
+                    if (data.length === 0) {
+                        layer.msg('must chose one line');
+                    } else {
+                        edit(data[0].id);
+                    }
+                    break;
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('must chose one line');
+                    } else {
+                        del(data[0].id)
+
+                    }
+                    break;
+                case 'refresh':
+                    refresh()
+                    break;
+
+            };
+        });
+        function edit(id) {
+            layer.open({
+                type: 2
+                , title: 'Menu Edit'
+                , content: '/MenuManage/Edit?id=' + id
+                , maxmin: true
+                , shadeClose: true
+                , area: ['40%', '60%']
+                , btn: ['Confirm', 'Cancel']
+                , yes: function (index, layero) {
+                    var iframeWindow = window['layui-layer-iframe' + index]
+                        , submitID = 'LAY-user-front-submit'
+                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                    //
+                    iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                        var field = data.field; 
+                        if (data.field.IsDelete == "on") {
+                            data.field.IsDelete = true;
+                        } else {
+                            data.field.IsDelete = false;
+                        }
+                        if (data.field.IsFirstPage == "on") {
+                            data.field.IsFirstPage = true;
+                        } else {
+                            data.field.IsFirstPage = false;
+                        }
+                        var menuarr = new Array();
+                        layero.find('iframe').contents().find("input[name='menusRoles']:checked").each(function (i) {
+                            menuarr[i] = $(this).val();
+                        });
+                        data.field.RoleIds = menuarr.join(",");
+                        //
+                        $.ajax({
+                            url: "/MenuManage/SaveData", dataType: "json", type: "post", data: data.field,
+                            success: function (res) {
+                                if (res.success) {
+                                    layer.msg('saved successfully');
+                                    layer.close(index); 
+                                    table.reload('infroSearch', {
+                                        where: tablefield,
+                                        page: {
+                                            curr: 1 
+                                        }
+                                    });
+                                }
+                                else {
+                                    layer.msg("Error：" + res.msg);
+                                }
+                            },
+                            error: function () {
+                                layer.msg("Net Error");
+                            }
+                        });
+                        return false;
+                    });
+                    submit.trigger('click');
+                }
+            });
+        }
+        function add() {
+            layer.open({
+                type: 2
+                , title: 'Menu Add'
+                , shadeClose: true
+                , content: '/MenuManage/Edit'
+                , maxmin: true
+                , area: ['40%', '60%']
+                , btn: ['Confirm', 'Cancel']
+                , yes: function (index, layero) {
+                    var iframeWindow = window['layui-layer-iframe' + index]
+                        , submitID = 'LAY-user-front-submit'
+                        , submit = layero.find('iframe').contents().find('#' + submitID);
+                    //
+                    iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                        var field = data.field; 
+                        if (data.field.IsDeleted == "on") {
+                            data.field.IsDeleted = "1";
+                        } else {
+                            data.field.IsDeleted = "0";
+                        }
+                        if (data.field.IsFirstPage == "on") {
+                            data.field.IsFirstPage = true;
+                        } else {
+                            data.field.IsFirstPage = false;
+                        }
+                        var menuarr = new Array();
+                        layero.find('iframe').contents().find("input[name='menusRoles']:checked").each(function (i) {
+                            menuarr[i] = $(this).val();
+                        });
+                        data.field.RoleIds = menuarr.join(",");
+                        //
+                        $.ajax({
+                            url: "/MenuManage/SaveData", dataType: "json", type: "post", data: data.field,
+                            success: function (res) {
+                                if (res.success) {
+                                    layer.msg('saved successfully');
+                                    layer.close(index); 
+                                    table.reload('infroSearch', {
+                                        where: tablefield,
+                                        page: {
+                                            curr: 1 
+                                        }
+                                    });
+                                }
+                                else {
+                                    layer.msg("Error：" + res.msg);
+                                }
+                            },
+                            error: function () {
+                                layer.msg("Net Error");
+                            }
+                        });
+                        return false;
+                    });
+                    submit.trigger('click');
+                }
+            });
+        }
+        function refresh() {
+            table.reload('infroSearch', {
+                where: {},
+                page: {
+                    curr: 1 
+                }
+            });
+        }
+        function del(id) {
+            layer.confirm('Confirm Delete ', function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: "/MenuManage/deleteData", dataType: "json", type: "post", data: { id: id },
+                    success: function (res) {
+                        if (res.success) {
+                            layer.msg('Delete Success');
+                            layer.close(index); 
+                            table.reload('infroSearch', {
+                                where: tablefield,
+                                page: {
+                                    curr: 1 
+                                }
+                            });
+                        }
+                        else {
+                            layer.msg("Error：" + res.msg);
+                        }
+                    },
+                    error: function () {
+                        layer.msg("Net Error");
+                    }
+                });
+                return false;
+            });
+        }
+
+    });
+</script>

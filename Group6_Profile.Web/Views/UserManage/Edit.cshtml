@@ -1,0 +1,88 @@
+﻿@model Group6_Profile.DTO.DTO.UserAddDTO
+@{
+    ViewBag.Title = "EditAsync";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IList<Group6_Profile.DTO.DTO.RoleDTO> sRoles = this.ViewBag.roles as IList<Group6_Profile.DTO.DTO.RoleDTO>;
+}
+<style>
+    .layui-form-label {
+        width: 80px;
+    }
+</style>
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 50px 50px 0 0;width: 68%; margin-left: 15%;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">UserName</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="Id" value="@(Model?.Id)" autocomplete="off" class="layui-input">
+            <input type="text" name="username" style="width:100%" value="@(Model?.UserName)" lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Account</label>
+        <div class="layui-input-block">
+            <input type="text" name="Account" style="width:100%" value="@(Model?.Account)" lay-verify="required" placeholder="Please Enter Account" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">PassWord</label>
+        <div class="layui-input-block" style="padding-top: 5px;">
+            <input type="password" name="PassWord" style="width:100%" value="@(Model?.Password)" lay-verify="required" placeholder="Please Enter PassWord" autocomplete="new-password" class="layui-input">
+        </div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">Tel</label>
+        <div class="layui-input-block">
+            <input type="text" name="Tel" style="width:100%" value="@(Model?.Tel)" lay-verify="required|tel_num" placeholder="Please Enter Tel" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Address</label>
+        <div class="layui-input-block">
+            <input type="text" name="Address" style="width:100%" value="@(Model?.Address)" lay-verify="required" placeholder="Please Enter Address" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+ 
+    <div class="layui-form-item role">
+        <label class="layui-form-label">Select Role </label>
+        <div class="layui-input-block">
+            <select name="RoleId" lay-filter="selectRole">
+                @foreach (var item in sRoles)
+                {
+                    <option value="@item.Id" style="width:100%" selected="@(Model?.RoleId==(item.Id))">@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:90px">Is Delete</label>
+        <div class="layui-input-block">
+            <input type="checkbox" class="layui-unselect layui-form-switch layui-form-onswitch" checked="@(Model?.IsDelete==true)" name="IsDelete" lay-skin="switch"
+                   lay-text="yes|no">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="Confirm">
+    </div>
+</div>
+
+<script>
+    $(function () {
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form;
+            form.verify({
+                //  
+                tel_num: function (value) {
+                    console.log(value)
+                    var reg = /[0-9]{10}/
+                    if (value.length != 10) {
+                        return 'Please Enter Correct Tel Format';
+                    }
+                }
+            });
+        });
+
+    })
+</script>

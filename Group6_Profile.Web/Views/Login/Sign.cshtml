@@ -1,0 +1,111 @@
+﻿@{
+    IList<Group6_Profile.DTO.DTO.RoleDTO> sRoles = this.ViewBag.roles as IList<Group6_Profile.DTO.DTO.RoleDTO>;
+}
+ 
+<html class="x-admin-sm" style="height:100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link href="~/layui/css/login.css" rel="stylesheet" />
+</head>
+<body class="login-bg">
+    <div class="login layui-anim layui-anim-up" style="max-width:600px">
+        <div class="message">Account Register</div>
+        <div id="darkbannerwrap"></div>
+        <form method="post" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">UserName</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" style="width:100%" lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item role">
+                <label class="layui-form-label">Select Role </label>
+                <div class="layui-input-block">
+                    <select name="RoleId" lay-filter="selectRole">
+                        @foreach (var item in sRoles)
+                        {
+                            <option value="@item.Id" style="width:100%" selected="@(Model?.RoleId==(item.Id))">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Account</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Account" style="width:100%" lay-verify="required" placeholder="Please Enter Account" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Password</label>
+                <div class="layui-input-block" style="padding-top: 5px;">
+                    <input type="password" id="Password" name="Password" style="width:100%" lay-verify="required" placeholder="Please Enter Password" autocomplete="new-password" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Confirm Password</label>
+                <div class="layui-input-block" style="padding-top: 5px;">
+                    <input type="password" name="ConfirmPassword" id="ConfirmPassword" style="width:100%" lay-verify="required" placeholder="Please Confirm Password" autocomplete="new-password" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Tel</label>
+                <div class="layui-input-block" style="padding-top: 5px;">
+                    <input type="text" name="Tel" style="width:100%" lay-verify="required|tel_num" placeholder="Please Enter Tel" autocomplete="new-password" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Address</label>
+                <div class="layui-input-block" style="padding-top: 5px;">
+                    <input type="text" name="Address" style="width:100%" lay-verify="required" placeholder="Please Enter Address" autocomplete="new-password" class="layui-input">
+                </div>
+            </div>
+            <input value="register" lay-submit lay-filter="login" style="width:100%;" type="submit">
+            <hr class="hr20">
+        </form>
+    </div>
+
+    <script>
+        $(function () {
+            var form = layui.form;
+            form.verify({
+                //
+                tel_num: function (value) {
+                    console.log(value)
+                    var reg = /[0-9]{10}/
+                    if (value.length != 10) {
+                        return 'Please Enter Correct Tel Format';
+                    }
+                }
+            });
+            layui.use('form', function () {
+                var form = layui.form;
+                form.on('submit(login)', function (data) {
+
+                    if ($("#Password").val() != $("#ConfirmPassword").val()) {
+                        layer.msg("Please Confirm Password");
+                        return false;
+                    }
+                    $.ajax({
+                        url: "/Login/SignInfor", dataType: "json", type: "post", data: data.field,
+                        success: function (res) {
+                            if (res.success) {
+                                layer.msg("Register Success");
+                                location.href = "/Login/Index";
+                            }
+                            else {
+                                layer.msg("Error：" + res.msg);
+                            }
+                        },
+                        error: function () {
+                            layer.msg("Net Error");
+                        }
+                    });
+                    return false;
+                });
+            });
+        })
+    </script>
+</body>
+</html>
