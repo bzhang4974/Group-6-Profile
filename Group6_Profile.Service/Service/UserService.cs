@@ -21,16 +21,18 @@ namespace Group6_Profile.Service.Service
         /// </summary>
         private readonly IMapper _mapper;
         private readonly UserRoleService _userRoleService;
+        private readonly SFileService _fileService;
         /// <summary>
         ///  
         /// </summary>
         /// <param name="freeSql"> </param>
         /// <param name="mapper"> </param>
         /// <param name="userRoleService"> </param>
-        public UserService(IFreeSql freeSql, IMapper mapper, UserRoleService userRoleService) : base(freeSql)
+        public UserService(IFreeSql freeSql, IMapper mapper, UserRoleService userRoleService, SFileService filesService) : base(freeSql)
         {
             _mapper = mapper;
             _userRoleService = userRoleService;
+            _fileService = filesService;
         }
         /// <summary>
         /// Check Login
@@ -105,6 +107,10 @@ namespace Group6_Profile.Service.Service
         {
             var user = await _freeSql.Select<SUserEntity>().Where(a => a.Id == id).IncludeMany(a => a.Roles).ToOneAsync();
             var etidUser = _mapper.Map<UserAddDTO>(user);
+            if(etidUser!=null)
+            {
+                etidUser.file = _fileService.GetDatasAsync(etidUser.Id.Value);
+            }
             return etidUser;
         }
         /// <summary>
@@ -117,13 +123,13 @@ namespace Group6_Profile.Service.Service
 
         public async Task<MessageModel<string>> SaveDataAsync(UserAddDTO user, long userId)
         {
-            //Already Exists
+            //is exist
             var select = _freeSql.Select<SUserEntity>().Where(m => m.Account == user.Account);
             if (user.Id.HasValue)
                 select.Where(m => m.Id != user.Id);
             bool exist = await select.AnyAsync();
             if (exist)
-                return MessageModel<String>.Fail("The Account Already Exists");
+                return MessageModel<String>.Fail("The Account Is Exist");
 
             //Add
             if (user.Id.HasValue == false)
@@ -135,7 +141,7 @@ namespace Group6_Profile.Service.Service
                 if (user.RoleId == 2)
                 {
                     var maxseller = _freeSql.Select<SUserEntity>().Where(a => a.UId.StartsWith("S")).OrderByDescending(a => a.UId).First();
-                    if (maxseller == null ||maxseller.UId == null)
+                    if (maxseller == null || maxseller.UId == null)
                     {
                         userEntity.UId = "S000001";
                     }
@@ -144,14 +150,14 @@ namespace Group6_Profile.Service.Service
                         string max = maxseller.UId.Substring(1);
                         if (int.TryParse(max, out int maxId) == false)
                         {
-                            return MessageModel<string>.Fail("Fail to get Max Seller ID");
+                            return MessageModel<string>.Fail("Get Max SellerId Fail");
                         }
                         userEntity.UId = "S" + ((maxId + 1) + "").PadLeft(6, '0');
                     }
                 }
                 else if (user.RoleId == 3)
                 {
-                    var maxseller = _freeSql.Select<SUserEntity>().Where(a=>a.UId.StartsWith("C")).OrderByDescending(a => a.UId).First();
+                    var maxseller = _freeSql.Select<SUserEntity>().Where(a => a.UId.StartsWith("C")).OrderByDescending(a => a.UId).First();
                     if (maxseller == null || maxseller.UId == null)
                     {
                         userEntity.UId = "C000001";
@@ -161,7 +167,7 @@ namespace Group6_Profile.Service.Service
                         string max = maxseller.UId.Substring(1);
                         if (int.TryParse(max, out int maxId) == false)
                         {
-                            return MessageModel<string>.Fail("Fail to get Max Seller ID");
+                            return MessageModel<string>.Fail("Get Max SellerId Fail");
                         }
                         userEntity.UId = "C" + ((maxId + 1) + "").PadLeft(6, '0');
                     }
@@ -170,6 +176,10 @@ namespace Group6_Profile.Service.Service
                 var result = await InsertInfor(userEntity);
                 if (result.IsSuccess)
                     _ = await _userRoleService.SetUserRoleAsync(userEntity.Id.Value, user.RoleId, userId);
+                if (user.file != null && user.file.Count > 0)
+                {
+                    _fileService.SaveData(user.file, userEntity.Id.Value, "GoodsImg");
+                }
                 return result;
             }
             else//Edit
@@ -179,6 +189,10 @@ namespace Group6_Profile.Service.Service
                 var result = await UpdateInfor<SUserEntity>(user, (m => m.Id == user.Id));
                 if (result.IsSuccess)
                     _ = await _userRoleService.SetUserRoleAsync(user.Id.Value, user.RoleId, userId);
+                if (user.file != null && user.file.Count > 0)
+                {
+                      _fileService.SaveData(user.file, user.Id.Value, "GoodsImg");
+                }
                 return result;
             }
         }
@@ -236,7 +250,7 @@ namespace Group6_Profile.Service.Service
             var user = await _freeSql.Select<SUserEntity>().Where(m => m.Id == id && m.Password == sourcePassword).ToOneAsync();
             if (user == null)
             {
-                return MessageModel<string>.Fail("Please Enter The Same Password");
+                return MessageModel<string>.Fail("Please Make Sure Password");
             }
             return await UpdateInfor<SUserEntity>(new { password = aimPassowrd }, (a => a.Id == id));
         }
@@ -259,14 +273,44 @@ namespace Group6_Profile.Service.Service
         {
             if (user.Password != user.ConfirmPassword)
             {
-                return MessageModel<string>.Fail("Please Enter The Same Password");
+                return MessageModel<string>.Fail("Please Make Sure Password");
             }
             var dbuser = _freeSql.Select<SUserEntity>().Where(a => a.Tel == user.Tel && a.UserName == user.UserName).First();
             if (dbuser == null)
             {
-                return MessageModel<string>.Fail("No Such User found");
+                return MessageModel<string>.Fail("not exust this user");
             }
             return await UpdateInfor<SUserEntity>(new { password = user.Password }, (a => a.Id == dbuser.Id));
+        }
+        /// <summary>
+        /// Get Seller Infor
+        /// </summary>
+        /// <param name="uId"></param>
+        /// <returns></returns>
+
+        public MessageModel<UserInforDTO> GetSeller(string uId)
+        {
+            UserInforDTO user = _freeSql.Select<SUserEntity, SUserRoleEntity>().Where((a, b) => a.IsDelete == false && a.UId == uId && a.Id == b.UserId && b.RoleId == 2).ToOne<UserInforDTO>((a, b) => new UserInforDTO { Address = a.Address, Tel = a.Tel, UID = a.UId, UserName = a.UserName });
+            if (user == null)
+            {
+                return MessageModel<UserInforDTO>.Fail("can not find this user");
+            }
+            return MessageModel<UserInforDTO>.Success("success", user);
+        }
+        /// <summary>
+        /// Get Buyer Infor
+        /// </summary>
+        /// <param name="uId"></param>
+        /// <returns></returns>
+
+        public MessageModel<UserInforDTO> GetBuyer(object uId)
+        {
+            UserInforDTO user = _freeSql.Select<SUserEntity, SUserRoleEntity>().Where((a, b) => a.IsDelete == false && a.UId == uId && a.Id == b.UserId && b.RoleId == 3).ToOne<UserInforDTO>((a, b) => new UserInforDTO { Address = a.Address, Tel = a.Tel, UID = a.UId, UserName = a.UserName });
+            if (user == null)
+            {
+                return MessageModel<UserInforDTO>.Fail("can not find this user");
+            }
+            return MessageModel<UserInforDTO>.Success("success", user);
         }
     }
 }

@@ -15,7 +15,7 @@
         <div class="layui-input-block">
             <input type="hidden" name="Id" value="@(Model?.Id)" autocomplete="off" class="layui-input">
             <input type="hidden" name="RoleId" value="@(Model?.RoleId)" autocomplete="off" class="layui-input">
-            <input type="text" name="username" style="width:100%" value="@(Model?.UserName)" lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
+            <input type="text" name="username" style="width:100%" value="@(Model?.UserName)" lay-verify="required" placeholder="Please Enter UserName" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -69,7 +69,7 @@
                     console.log(value)
                     var reg = /[0-9]{10}/
                     if (value.length!=10) {
-                        return 'Please Enter Correct Tel Format';
+                        return 'Please Enter Correct Tel Number';
                     }
                 }
             });

@@ -1,6 +1,7 @@
 using Group6_Profile.Service.Attributes;
 using Group6_Profile.Service.Service;
 using Group6_Profile.web.WebExtends;
+using Microsoft.OpenApi.Models;
 using Snowflake.Core;
 using System.Net;
 using System.Reflection;
@@ -13,6 +14,18 @@ namespace Group6_Profile.Web
         {
             var worker = new IdWorker(1, 1);
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen((options => {
+
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "shop api",
+                    Description = "API"
+                });
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            }));
             //builder.Services.AddControllersWithViews();
             builder.Services.AddControllersWithViews().AddJsonOptions(ops =>
             {
@@ -70,10 +83,12 @@ namespace Group6_Profile.Web
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            //if (!app.Environment.IsDevelopment())
+            //{
+            app.UseExceptionHandler("/Home/Error");
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            //}
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();

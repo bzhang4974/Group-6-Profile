@@ -2,38 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Group6_Profile.DTO.DTO
 {
     /// <summary>
-    /// Add User DTO
+    /// UserInforDTO
     /// </summary>
-    public class UserAddDTO : BaseEditDTO
+    public class UserInforDTO
     {
         /// <summary>
-        /// Account
+        /// UID
         /// </summary>
-        public string Account { get; set; }
+        public string UID { get; set; }
         /// <summary>
         ///  UserName
         /// </summary>
         public string UserName { get; set; }
-        /// <summary>
-        /// PassWord
-        /// </summary>
 
-        public string Password { get; set; }
-
-        /// <summary>
-        /// IsDelete
-        /// </summary>
-        public bool IsDelete { get; set; }
-        /// <summary>
-        /// RoleId
-        /// </summary>
-        public long RoleId { get; set; }
 
         /// <summary>
         /// Tel
@@ -43,7 +29,5 @@ namespace Group6_Profile.DTO.DTO
         /// Address
         /// </summary>
         public string Address { get; set; }
-        public List<SFileDTO> file { get; set; }
-
     }
 }

@@ -102,9 +102,9 @@ namespace Group6_Profile.Service.Service
         {
             int count = await _freeSql.Update<T1>().SetDto(dto).Where(exp).ExecuteAffrowsAsync();
             if (count > 0)
-                return MessageModel<String>.Success("saved successfully");
+                return MessageModel<String>.Success("save success");
             else
-                return MessageModel<String>.Fail("failed to save");
+                return MessageModel<String>.Fail("save fail");
         }
         /// <summary>
         /// update data
@@ -128,9 +128,9 @@ namespace Group6_Profile.Service.Service
         {
             var t1 = await _freeSql.Insert(source).ExecuteAffrowsAsync();
             if (t1 > 0)
-                return MessageModel<String>.Success("saved successfully");
+                return MessageModel<String>.Success("save success");
             else
-                return MessageModel<String>.Fail("failed to save");
+                return MessageModel<String>.Fail("save fail");
         }
         /// <summary>
         /// add Data

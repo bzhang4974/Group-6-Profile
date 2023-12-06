@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Group6_Profile.Service.Attributes
 {
     /// <summary>
-    /// Snowflake Attribetes
+    /// 雪花算法的Attribete
     /// </summary>
     public class SnowflakeAttribute : Attribute
     {

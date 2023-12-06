@@ -93,7 +93,8 @@ body {
             border: 1px solid #009688;
         }
 
-
+/*登录样式*/
+/*头部*/
 .container {
     width: 100%;
     height: 45px;
@@ -400,7 +401,7 @@ table th, table td {
     }
 }
 
-
+/*精细版样式*/
 
 .x-admin-sm {
     font-size: 12px;

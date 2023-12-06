@@ -70,7 +70,7 @@ namespace Group6_Profile.web.WebExtends
         public class LongConverter : JsonConverter<long>
         {
             /// <summary>
-            /// 
+            /// 读json  将前端传过来的字符串转成long类型
             /// </summary>
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
@@ -85,7 +85,7 @@ namespace Group6_Profile.web.WebExtends
                     return reader.GetInt64();
             }
             /// <summary>
-            /// json to long 
+            /// 写json 转成long 类型转给前端
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>
@@ -96,12 +96,12 @@ namespace Group6_Profile.web.WebExtends
             }
         }
         /// <summary>
-        /// 
+        /// 可空long类型转换
         /// </summary>
         public class LongNullableConverter : JsonConverter<long?>
         {
             /// <summary>
-            /// 
+            /// 读取参数   将前端传过来的字符串转成long类型
             /// </summary>
             /// <param name="reader"></param>
             /// <param name="typeToConvert"></param>
@@ -116,7 +116,7 @@ namespace Group6_Profile.web.WebExtends
                     return reader.GetInt64();
             }
             /// <summary>
-            /// 
+            /// 写json  转成long 类型转给前端
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>

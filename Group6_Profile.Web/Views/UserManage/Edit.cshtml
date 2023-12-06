@@ -14,7 +14,7 @@
         <label class="layui-form-label">UserName</label>
         <div class="layui-input-block">
             <input type="hidden" name="Id" value="@(Model?.Id)" autocomplete="off" class="layui-input">
-            <input type="text" name="username" style="width:100%" value="@(Model?.UserName)" lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
+            <input type="text" name="username" style="width:100%" value="@(Model?.UserName)" lay-verify="required" placeholder="Please Enter UserName" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -26,7 +26,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">PassWord</label>
         <div class="layui-input-block" style="padding-top: 5px;">
-            <input type="password" name="PassWord" style="width:100%" value="@(Model?.Password)" lay-verify="required" placeholder="Please Enter PassWord" autocomplete="new-password" class="layui-input">
+            <input type="password" name="PassWord" style="width:100%" value="@(Model?.Password)" lay-verify="required" placeholder="Please Enter Password" autocomplete="new-password" class="layui-input">
         </div>
     </div>
      <div class="layui-form-item">
@@ -53,7 +53,23 @@
             </select>
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">profile picture</label>
+        <div class="layui-input-block  ">
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" id="demo1" style="width:150px ;height:150px; " src="../UpFile/DownFile?key=@((Model!=null&&Model.file!=null&& Model.file.Count>0)?Model.file.Last().Id.Value:0)">
+                <p id="demoText"></p>
 
+            </div>
+            <input type="text" name="frontImg" style=" width: 100%;  padding-left: 20px;  display: none" lay-verify="required" placeholder="Please Upoad Profile Picture" autocomplete="off" class="layui-input frontImg" value="@((Model != null && Model.file != null && Model.file.Count>0) ? Model.file.Last().Id.Value : 0)">
+            <button type="button" class="layui-btn" id="test1" style=" margin-left: 10%;">Upoad Picture</button>
+        </div>
+
+
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="确认">
+        </div>
+    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label" style="width:90px">Is Delete</label>
@@ -72,13 +88,42 @@
     $(function () {
         layui.use(['form', 'laydate'], function () {
             var form = layui.form;
+            var upload = layui.upload;
+            var uploadInst = upload.render({
+                elem: '#test1'
+                , accept: 'images'
+                , url: '../UpFile/UploadFile'
+                , data: { code: "GoodsImg" }
+                , size: 0
+                , before: function (obj) {
+                    obj.preview(function (index, file, result) {
+                        $('#demo1').attr('src', result);
+                    });
+                }
+                , done: function (res) {
+
+                    if (res.code > 0) {
+                        return layer.msg('Upload Fail');
+                    } else {
+                        $(".frontImg").attr("value", res.data);
+                    }
+
+                }
+                , error: function () {
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">Upload Fail</span> <a class="layui-btn layui-btn-xs demo-reload">ReTry</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
             form.verify({
                 //  
                 tel_num: function (value) {
                     console.log(value)
                     var reg = /[0-9]{10}/
                     if (value.length != 10) {
-                        return 'Please Enter Correct Tel Format';
+                        return 'Please Enter Correct Tel Number';
                     }
                 }
             });

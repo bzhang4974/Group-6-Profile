@@ -86,18 +86,18 @@ namespace Group6_Profile.Service.Service
         /// <returns></returns>
         public async Task<MessageModel<string>> SaveDataAsync(MenuAddDTO menuadd, long userId)
         {
-            //Already Exists
+            //is exist
             var codeselect = _freeSql.Select<SMenuEntity>().Where(a => a.Code == menuadd.Code);
             if (menuadd.Id.HasValue)
                 codeselect = codeselect.Where(a => a.Id != menuadd.Id);
             if (await codeselect.AnyAsync())
-                return MessageModel<String>.Fail("The Menu Code Already Exists");
+                return MessageModel<String>.Fail("The Menu Code Is Exist");
             var select = _freeSql.Select<SMenuEntity>().Where(m => m.OrderIndex == menuadd.OrderIndex && m.Name == menuadd.Name && menuadd.Url == m.Url);
             if (menuadd.Id.HasValue)
                 select.Where(m => m.Id != menuadd.Id);
             bool exist = await select.AnyAsync();
             if (exist)
-                return MessageModel<String>.Fail("The Menu Already Exists");
+                return MessageModel<String>.Fail("The Menu Is Exist");
             //add
             if (menuadd.Id.HasValue == false)
             {

@@ -16,7 +16,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">UserName</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" style="width:100%" lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
+                    <input type="text" name="username" style="width:100%" lay-verify="required" placeholder="Please Enter UserName" autocomplete="off" class="layui-input">
                 </div>
             </div>
           
@@ -64,7 +64,7 @@
                         url: "/Login/ResetPassword", dataType: "json", type: "post", data: data.field,
                         success: function (res) {
                             if (res.success) {
-                                layer.msg("Password Reset Successfully");
+                                layer.msg("Reset Password Success");
                                 location.href = "/Login/Index";
                             }
                             else {

@@ -73,7 +73,7 @@ namespace Group6_Profile.Service.Service
                 }
             }
             _ = _freeSql.Delete<SRoleMenuEntity>().Where(a => existIds.Contains(a.Id.Value) == false && a.RoleId == roleId).ExecuteAffrowsAsync();
-            return MessageModel<string>.Success("Saved Successfully");
+            return MessageModel<string>.Success("Save Success");
         }
     }
 }

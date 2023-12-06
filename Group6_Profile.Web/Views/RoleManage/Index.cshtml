@@ -139,7 +139,7 @@
                             url: "/RoleManage/SaveData", dataType: "json", type: "post", data: data.field,
                             success: function (res) {
                                 if (res.success) {
-                                    layer.msg('saved successfully');
+                                    layer.msg('Save Success');
                                     layer.close(index); 
                                     table.reload('infroSearch', {
                                         where: tablefield,
@@ -188,7 +188,7 @@
                             url: "/RoleManage/SaveData", dataType: "json", type: "post", data: data.field,
                             success: function (res) {
                                 if (res.success) {
-                                    layer.msg('saved successfully');
+                                    layer.msg('Save Success');
                                     layer.close(index); 
                                     table.reload('infroSearch', {
                                         where: tablefield,
@@ -220,13 +220,13 @@
             });
         }
         function del(id) {
-            layer.confirm('Confirm Delete', 
-            {
-                title: "Message",
-                icon: 0,
-                btn: ['Confirm', 'Cancel']
+            layer.confirm('Confirm Delete',
+                {
+                    title: "Message",
+                    icon: 0,
+                    btn: ['Confirm', 'Cancel']
 
-            },
+                },
             function (index) {
                 layer.close(index);
                 $.ajax({

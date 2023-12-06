@@ -89,7 +89,7 @@
         var index = layer.open({
             type: 2,
             area: [w + 'px', h + 'px'],
-            fix: false, 
+            fix: false, // 
             maxmin: true,
             shadeClose: true,
             shade: 0.4,
@@ -101,7 +101,7 @@
         }
     }
 	/**
-	 * [close]
+	 * [close  ]
 	 * @return {[type]} [description]
 	 */
     Xadmin.prototype.close = function () {
@@ -109,14 +109,14 @@
         parent.layer.close(index);
     };
     /**
-     * [close]
+     * [close  ]
      * @return {[type]} [description]
      */
     Xadmin.prototype.father_reload = function () {
         parent.location.reload();
     };
 	/**
-	 * [get_data]
+	 * [get_data  ]
 	 * @return {[type]} [description]
 	 */
     Xadmin.prototype.get_data = function () {
@@ -125,7 +125,7 @@
         return layui.data('tab_list')
     }
 	/**
-	 * [set_data]
+	 * [set_data  ]
 	 * @param {[type]} id [description]
 	 */
     Xadmin.prototype.set_data = function (title, url, id) {
@@ -140,7 +140,7 @@
     };
 
     /**
-     * [get_data]
+     * [get_data  ]
      * @return {[type]} [description]
      */
     Xadmin.prototype.get_cate_data = function () {
@@ -149,7 +149,7 @@
         return layui.data('cate')
     }
     /**
-     * [set_data]
+     * [set_data  ]
      * @param {[type]} id [description]
      */
     Xadmin.prototype.set_cate_data = function (data) {
@@ -160,7 +160,7 @@
         layui.data('cate', data);
     };
 	/**
-	 * [del_data Delete]
+	 * [del_data Delete ]
 	 * @param  {[type]} id [description]
 	 * @return {[type]}    [description]
 	 */
@@ -177,7 +177,7 @@
         }
     };
 	/**
-	 * [del_other_data Delete]
+	 * [del_other_data Delete ]
 	 * @param  {[type]} id [description]
 	 * @return {[type]}    [description]
 	 */

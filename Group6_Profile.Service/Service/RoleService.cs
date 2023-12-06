@@ -96,13 +96,13 @@ namespace Group6_Profile.Service.Service
         /// <returns></returns>
         public async Task<MessageModel<string>> SaveDataAsync(RoleAddDTO roleadd, long userId)
         {
-            //Already Exists
+            //is exist
             var select = _freeSql.Select<SRoleEntity>().Where(m => m.Code == roleadd.Code || m.Name == roleadd.Name);
             if (roleadd.Id.HasValue)
                 select.Where(m => m.Id != roleadd.Id);
             bool exist = await select.AnyAsync();
             if (exist)
-                return MessageModel<String>.Fail("The Role Already Exists");
+                return MessageModel<String>.Fail("The Role Is Exist");
             //Add
             if (roleadd.Id.HasValue == false)
             {

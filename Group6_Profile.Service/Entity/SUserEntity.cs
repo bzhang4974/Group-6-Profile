@@ -1,9 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Group6_Profile.DTO.DTO;
 
 namespace Group6_Profile.Service.Entity
 {
@@ -50,6 +46,9 @@ namespace Group6_Profile.Service.Entity
         /// </summary>
         [Navigate(ManyToMany = typeof(SUserRoleEntity))]
         public virtual List<SRoleEntity> Roles { get; set; } = new List<SRoleEntity>();
+
+        [FreeSql.DataAnnotations.Column(IsIgnore = true)]
+        public List<SFileDTO> file { get; set; }
 
     }
 }

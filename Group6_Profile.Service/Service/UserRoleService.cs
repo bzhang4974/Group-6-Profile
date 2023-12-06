@@ -47,7 +47,7 @@ namespace Group6_Profile.Service.Service
                 userRole.UpdateUserId = douserId;
                 _ = Insert<SUserRoleEntity>(userRole);
             }
-            return MessageModel<string>.Success("saved successfully");
+            return MessageModel<string>.Success("Save Success");
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Group6_Profile.DTO.DTO
 {
     public class SFileDTO
     {
+        public long? Id { get; set; }
         public string Code
         {
             get;

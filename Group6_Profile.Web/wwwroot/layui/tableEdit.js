@@ -2,7 +2,7 @@
     "use strict";
     var moduleName = 'tableEdit', _layui = layui, laytpl = _layui.laytpl
         , $ = _layui.$, laydate = _layui.laydate, table = _layui.table, layer = _layui.layer
-        , selectTpl = [ 
+        , selectTpl = [ // 
             '<div class="layui-tableEdit-div" style="{{d.style}}">'
             , '<ul class="layui-tableEdit-ul">'
             , '{{# d.data = typeof(d.data) === "function"? d.data(d):d.data; if(d.data){ }}'
@@ -13,12 +13,12 @@
             , '</li>'
             , '{{# }); }}'
             , '{{# } else { }}'
-            , '<li>NULL</li>'
+            , '<li>无数据</li>'
             , '{{# } }}'
             , '</ul>'
             , '</div>'
         ].join('')
-        , selectMoreTpl = [ 
+        , selectMoreTpl = [ // 
             '<div class="layui-tableEdit-div" style="{{d.style}}">'
             , '<div class="layui-tableEdit-tpl">'
             , '<ul>'
@@ -30,13 +30,13 @@
             , '</li>'
             , '{{# }); }}'
             , '{{# } else { }}'
-            , '<li>NULL</li>'
+            , '<li>no data</li>'
             , '{{# } }}'
             , '</ul>'
             , '</div>'
             , '<div style="line-height: 36px;">'
             , '<div style="float: left">'
-            , '<button type="button" event-type="close" class="layui-btn layui-btn-sm layui-btn-primary">Close</button>'
+            , '<button type="button" event-type="close" class="layui-btn layui-btn-sm layui-btn-primary">关闭</button>'
             , '</div>'
             , '<div style="text-align: right">'
             , '<button event-type="confirm" type="button" class="layui-btn layui-btn-sm layui-btn-primary">Confirm</button>'
@@ -44,7 +44,7 @@
             , '</div>'
             , '</div>'
         ].join('');
-    
+    // css 
     var thisCss = [];
     thisCss.push('.layui-tableEdit-div{position:absolute;background-color:#fff;font-size:14px;border:1px solid #d2d2d2;z-index:19910908445;max-height: 252px;}');
     thisCss.push('.layui-tableEdit-tpl{max-height:216px;overflow-y:auto;}');
@@ -65,50 +65,50 @@
         verify: {
             required: [
                 /[\S]+/
-                , 'The Field Cannot Be Empty'
+                , 'The required fields cannot be blank'
             ]
-            , Tel: [
+            , phone: [
                 /^1[34578]\d{9}$/
-                , 'Please Enter Correct Tel format'
+                , 'Please Enter Couurnt Tel'
             ]
             , email: [
                 /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
-                , 'Invalid Email Format'
+                , 'The mailbox format is incorrect'
             ]
             , url: [
                 /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
-                , 'Invalid Url Format'
+                , 'The link format is incorrect'
             ]
             , number: [
                 /(^[-+]?\d+$)|(^[-+]?\d+\.\d+$)/
-                , 'Only numbers allowed'
+                , 'Fill in numbers only'
             ]
             , date: [
                 /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
-                , 'Invalid Date Format'
+                , 'The date format is incorrect'
             ]
             , identity: [
                 /(^\d{15}$)|(^\d{17}(x|X|\d)$)/
-                , 'Please Enter ID Format'
+                , 'Please Enter Corrent ID Card'
             ]
         }
     };
 
-    var Class = function () { //new one instance。
+    var Class = function () { 
         var instance;
         Class = function Class() {
             return instance;
         };
-        Class.prototype = this; 
+        Class.prototype = this;  
         instance = new Class();
         instance.constructor = Class; 
         return instance
-    }; //Constructor
+    }; 
     var singleInstance = new Class();
     var inFunc = function () { singleInstance.leaveStat = false; }, outFunc = function () { singleInstance.leaveStat = true; };
     document.onclick = function () { if (singleInstance.leaveStat) singleInstance.deleteAll(); };
 
-    
+   
     Class.prototype.date = function (options) {
         var othis = this;
         othis.callback = options.callback, othis.element = options.element, othis.dateType = options.dateType;
@@ -131,7 +131,7 @@
         _layui.stope();
     };
 
-    
+ 
     Class.prototype.input = function (options) {
         var othis = this;
         othis.callback = options.callback, othis.element = options.element;
@@ -152,8 +152,7 @@
         $(that).hover(inFunc, outFunc);
         _layui.stope();
     };
-
-    
+ 
     Class.prototype.signedInput = function (options) {
         var othis = this;
         othis.callback = options.callback, othis.element = options.element;
@@ -196,10 +195,10 @@
         })
     };
 
-   
+ 
     Class.prototype.isEmpty = function (dataStr) { return typeof dataStr === 'undefined' || dataStr === null || dataStr.length <= 0; };
 
-    
+ 
     Class.prototype.register = function (options) {
         var othis = this;
         othis.enabled = options.enabled, othis.callback = options.callback;
@@ -208,24 +207,24 @@
         var that = othis.element;
         if ($(that).find('input.layui-tableEdit-input')[0]) return;
         othis.deleteAll(), othis.leaveStat = false;
-        var input = $('<input class="layui-input layui-tableEdit-input" placeholder="Please select">')
+        var input = $('<input class="layui-input layui-tableEdit-input" placeholder="请选择">')
             , tableEdit = $('<div class="layui-tableEdit"></div>')
             , tableBody = $(that).parents('div.layui-table-body')
             , tablePage = $(that).parents('div.layui-table-box').eq(0).next();
         (39 - that.offsetHeight > 3) && input.css('height', '30px');
         (that.offsetHeight - 39 > 3) && input.css('height', '50px');
         tableEdit.append(input), $(that).append(tableEdit), input.focus();
-        var thisY = input[0].getBoundingClientRect().top 
-            , thisHeight = ((39 - that.offsetHeight > 3) ? 30 : input[0].offsetHeight) 
+        var thisY = input[0].getBoundingClientRect().top  
+            , thisHeight = ((39 - that.offsetHeight > 3) ? 30 : input[0].offsetHeight)  
             , thisHeight = ((that.offsetHeight - 39 > 3) ? 50 : thisHeight)
-            , thisWidth = input[0].offsetWidth 
-            , elemY = that.getBoundingClientRect().top 
+            , thisWidth = input[0].offsetWidth  
+            , elemY = that.getBoundingClientRect().top  
             , tableBodyY = tableBody[0].getBoundingClientRect().top
             , pageY = tablePage[0].getBoundingClientRect().top
-            , tableBodyHeight = tableBody.height() 
+            , tableBodyHeight = tableBody.height()  
             , isType = thisY - tableBodyY > 0.8 * tableBodyHeight
             , type = isType ? 'top: auto;bottom: ' + (thisHeight + 2) + 'px;' : 'bottom: auto;top: ' + (thisHeight + 2) + 'px;';
-        if (elemY < tableBodyY) tableBody[0].scrollTop = that.offsetTop;
+        if (elemY < tableBodyY) tableBody[0].scrollTop = that.offsetTop; 
         var style = type + 'width: ' + thisWidth + 'px;left: 0px;' + (othis.enabled ? '' : 'overflow-y: auto;');
         var getClassFn = function (item) {
             if (othis.isEmpty(othis.selectedData) || othis.isEmpty(item.name)) return "";
@@ -246,40 +245,40 @@
         };
         tableEdit.append(laytpl(othis.enabled ? selectMoreTpl : selectTpl).render({ data: othis.data, style: style, callbackFn: getClassFn }));
         var $tableEdit = $('div.layui-tableEdit-div')[0];
-        (thisY + $tableEdit.offsetHeight + thisHeight > pageY) && !isType && (tableBody[0].scrollTop = that.offsetTop);
+        (thisY + $tableEdit.offsetHeight + thisHeight > pageY) && !isType && (tableBody[0].scrollTop = that.offsetTop);//调整滚动条位置
+        othis.events();
     };
-
-    
+ 
     Class.prototype.deleteAll = function () {
         $('div.layui-tableEdit-div,div.layui-tableEdit,div.layui-laydate,input.layui-tableEdit-input,button.layui-tableEdit-sub,button.layui-tableEdit-add').remove();
-        delete this.leaveStat;
+        delete this.leaveStat; 
     };
 
  
     Class.prototype.events = function () {
         var othis = this;
-        var searchFunc = function (val) {
+        var searchFunc = function (val) {  
             $('div.layui-tableEdit-div li').each(function () {
                 othis.isEmpty(val) || $(this).data('value').indexOf(val) > -1 ? $(this).show() : $(this).hide();
             });
-        }, liClickFunc = function () { 
+        }, liClickFunc = function () {  
             var liArr = $('div.layui-tableEdit-div li');
             liArr.unbind('click'), liArr.bind('click', function (e) {
                 _layui.stope(e);
-                if (othis.enabled) {
+                if (othis.enabled) { 
                     $(this).hasClass("layui-tableEdit-checked") ? ($(this).removeClass("layui-tableEdit-checked"),
                         $(this).removeClass("layui-tableEdit-selected"))
                         : $(this).addClass("layui-tableEdit-checked")
-                } else {
+                } else { 
                     othis.deleteAll();
                     if (othis.callback) othis.callback.call(othis.element, { name: $(this).data("name"), value: $(this).data("value") });
                 }
             });
-        }, btnClickFunc = function () { 
+        }, btnClickFunc = function () {  
             $("div.layui-tableEdit-div button").bind('click', function () {
                 var eventType = $(this).attr("event-type"), btn = this, dataList = new Array();
-                if (eventType === 'close') singleInstance.deleteAll();
-                if (eventType === 'confirm') {
+                if (eventType === 'close') singleInstance.deleteAll();  
+                if (eventType === 'confirm') {  
                     $('div.layui-tableEdit-div li').each(function (e) {
                         if (!$(this).hasClass("layui-tableEdit-checked")) return;
                         dataList.push({ name: $(this).data("name"), value: $(this).data("value") });
@@ -289,15 +288,15 @@
                 }
             });
         };
-        
+    
         $(othis.element).find('input.layui-tableEdit-input').bind('input propertychange', function () { searchFunc(this.value) });
         othis.enabled ? (liClickFunc(), btnClickFunc()) : liClickFunc();
         $(othis.element).hover(inFunc, outFunc);
     };
 
-    var AopEvent = function (cols) { this.config = { colsConfig: {} }; this.parseCols(cols) };
+    var AopEvent = function (cols) { this.config = { colsConfig: {} }; this.parseCols(cols) }; 
     /**
-     * Load tableEdit config
+     * 
      * @param cols
      */
     AopEvent.prototype.parseCols = function (cols) {
@@ -311,8 +310,8 @@
     };
     /**
      * 
-     * @param event
-     * @param callback
+     * @param event  
+     * @param callback  
      */
     AopEvent.prototype.on = function (event, callback) {
         var othis = this; othis.config.event = event, othis.config.callback = callback;
@@ -323,7 +322,7 @@
             }
             obj.field = field;
             var callbackFn = function (res) {
-                if (config.verify && !othis.verify(res, config.verify, this)) return; 
+                if (config.verify && !othis.verify(res, config.verify, this)) return;  
                 obj.value = Array.isArray(res) ? (res.length > 0 ? res : [{ name: '', value: '' }]) : res;
                 othis.config.callback.call(zthis, obj);
                 if (!singleInstance.isEmpty(config.cascadeSelectField)) {
@@ -331,7 +330,7 @@
                     $(csElement).attr("cascadeSelect-data", JSON.stringify({ data: res, field: field }));
                 }
             };
-            var csd = $(this).attr("cascadeSelect-data");
+            var csd = $(this).attr("cascadeSelect-data"); 
             if (singleInstance.isEmpty(csd)) { 
                 if (config.type === 'select') {
                     singleInstance.register({ data: config.data, element: zthis, enabled: config.enabled, selectedData: obj.data[field], callback: callbackFn });
@@ -342,12 +341,12 @@
                 } else if (config.type === 'signedInput') {
                     singleInstance.signedInput({ element: zthis, oldValue: obj.data[field], callback: callbackFn });
                 } else othis.config.callback.call(zthis, obj);
-            } else {
+            } else { 
                 if (config.type === 'date') return;
-               
+                
                 var filter = $(zthis).parents('div.layui-table-view').eq(0).prev().attr('lay-filter')
                     , rs = active.callbackFn.call(zthis, 'clickBefore(' + filter + ')', JSON.parse(csd));
-                
+            
                 if (singleInstance.isEmpty(rs)) {
                     active.on("async(" + filter + ")", function (result) {
                         singleInstance.register({ data: result.data, element: zthis, enabled: result.enabled, selectedData: obj.data[field], callback: callbackFn });
@@ -361,16 +360,16 @@
     };
 
     /**
-     * Verify data
-     * @param data 
-     * @param verify 
-     * @param td 
-     * @returns {boolean} 
+     *  
+     * @param data  
+     * @param verify  
+     * @param td  
+     * @returns {boolean}  
      */
     AopEvent.prototype.verify = function (data, verify, td) {
         var verifyObj = configs.verify[verify.type];
         var verifyMsg = verify.msg;
-        verifyMsg = verifyMsg ? verifyMsg : (verifyObj ? verifyObj[1] : 'The Field Cannot Be Empty');
+        verifyMsg = verifyMsg ? verifyMsg : (verifyObj ? verifyObj[1] : 'The required fields cannot be blank');
         if (singleInstance.isEmpty(data)) {
             layer.tips(verifyMsg, td, { tipsMore: true });
             return false;
@@ -387,19 +386,19 @@
         if (!verifyObj && !verify.regx) {
             return true;
         }
-        if (verify.regx) { 
-            if (typeof verify.regx === "function") {
+        if (verify.regx) {  
+            if (typeof verify.regx === "function") { 
                 if (verify.regx(data)) return true;
                 layer.tips(verifyMsg, td, { tipsMore: true });
                 return false;
             }
-            if (typeof verify.regx === "string") { 
+            if (typeof verify.regx === "string") {  
                 var regx = new RegExp(verify.regx);
                 if (regx.test(data)) return true;
                 layer.tips(verifyMsg, td, { tipsMore: true });
                 return false;
             }
-            if (verify.regx.test(data)) return true; 
+            if (verify.regx.test(data)) return true;  
             layer.tips(verifyMsg, td, { tipsMore: true });
             return false;
         }
@@ -411,10 +410,10 @@
     };
 
     /**
-     * 
+     * Validation of submitted data
      * @param options {elem:'#test',data:[],verifyKey:'id'}
-     * elem, data
-     * verifyKey
+     * elem:  。
+     * verifyKey:  
      * @returns {*}
      */
     AopEvent.prototype.submitValidate = function (options) {

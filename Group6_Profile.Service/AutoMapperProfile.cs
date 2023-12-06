@@ -19,6 +19,8 @@ namespace Group6_Profile.Service
         /// </summary>
         public AutoMapperProfile()
         {
+            CreateMap<SFileDTO, SFilesEntity>();
+            CreateMap<SFilesEntity, SFileDTO>();
             //Entity-->DTO
             CreateMap<SUserEntity, LoginUserDTO>().ForMember(d => d.RoleId
             , o => o.MapFrom(a => a.Roles.Select(a => a.Id.Value).ToArray()));
@@ -27,13 +29,14 @@ namespace Group6_Profile.Service
           , o => o.MapFrom(a => a.Roles.Select(a => a.Id.Value).FirstOrDefault()));
             CreateMap<SUserEntity, UserGridDTO>();
             //DTO-->Entity
-            CreateMap<UserAddDTO, SUserEntity>();
+            CreateMap<UserAddDTO, SUserEntity>().ForMember(a=>a.file,o=>o.MapFrom(c=>c.file));
             CreateMap<RoleAddDTO, SRoleEntity>();
             CreateMap<MenuAddDTO, SMenuEntity>();
 
-            CreateMap<SFileDTO, SFilesEntity>();
+        
 
             CreateMap<SUserEntity, UserRoleInforDTO>();
+            CreateMap<ProductDTO, ProductEntity>(); 
         }
     }
 }
