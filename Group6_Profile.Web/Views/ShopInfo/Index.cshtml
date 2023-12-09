@@ -1,0 +1,81 @@
+﻿@model Group6_Profile.DTO.DTO.ShopInfoDTO
+@{
+    ViewBag.Title = "EditAsync";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<style>
+    .layui-form-label {
+        width: 80px;
+    }
+</style>
+<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 50px 50px 0 0;width: 60%; margin-left: 15%;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">ShopName</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="Id" value="@(Model?.Id)" autocomplete="off" class="layui-input">
+            <input type="text" name="ShopName" style="width:100%" value="@(Model?.ShopName)" lay-verify="required" placeholder="Please Enter ShopName" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">RegisterDate</label>
+        <div class="layui-input-block">
+
+            <input type="text" name="RegisterDate" id="test1-1" placeholder="yyyy-MM-dd" style="width:100%" value="@(Model?.RegisterDate)" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Describe</label>
+        <div class="layui-input-block" style="padding-top: 5px;">
+            <input type="text" name="Describe" style="width:100%" value="@(Model?.Describe)" lay-verify="required" placeholder="Please Enter Describe" autocomplete="new-password" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Owner</label>
+        <div class="layui-input-block" style="padding-top: 5px;">
+            <input type="text" name="Describe" style="width:100%" value="@(this.ViewBag.UserName)" lay-verify="required" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item  " style="margin-left:40%;margin-top:20px">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">Commit</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['laydate', 'laypage', 'layer', 'form', 'table', 'carousel', 'upload', 'element', 'slider'], function () {
+        var table = layui.table;
+        var form = layui.form
+        layer = layui.layer;
+        var laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#test1-1'
+            , lang: 'en'
+        });
+        form.on('submit(formDemo)', function (data) {
+            $.ajax({
+                url: "/ShopInfo/SaveData", dataType: "json", type: "post", data: data.field,
+                success: function (res) {
+                    if (res.success) {
+                        layer.msg('Save Success');
+                        location.reload();
+                    }
+                    else {
+                        layer.msg("Error：" + res.msg);
+                    }
+                },
+                error: function () {
+                    layer.msg("Net Error");
+                }
+            });
+
+
+
+        })
+
+    })
+
+
+
+</script>

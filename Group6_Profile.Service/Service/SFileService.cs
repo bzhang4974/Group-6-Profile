@@ -20,6 +20,16 @@ namespace Group6_Profile.Service.Service
         {
             return _freeSql.Select<SFilesEntity>().Where(a => a.DataID == key).ToOne<SFileDTO>();
         }
+        public SFileDTO GetDataByUserdAsync(string uid)
+        {
+            var user = _freeSql.Select<SUserEntity>().Where(a => a.UId == uid).ToOne<SUserEntity>();
+            if (user == null)
+            {
+                return null;
+            }
+
+            return _freeSql.Select<SFilesEntity>().Where(a => a.DataID==user.Id).ToOne<SFileDTO>();
+        }
         public SFileDTO GetDataAsync(long key)
         {
             return _freeSql.Select<SFilesEntity>().Where(a => a.Id == key).ToOne<SFileDTO>();

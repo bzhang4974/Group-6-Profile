@@ -36,7 +36,9 @@ namespace Group6_Profile.Service
         
 
             CreateMap<SUserEntity, UserRoleInforDTO>();
-            CreateMap<ProductDTO, ProductEntity>(); 
+            CreateMap<ProductDTO, ProductEntity>();
+            CreateMap<ShopInfoDTO, ShopInfoEntity>();
+            CreateMap<ShopInfoEntity, ShopInfoDTO>();
         }
     }
 }

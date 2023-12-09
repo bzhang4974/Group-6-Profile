@@ -24,5 +24,6 @@ namespace Group6_Profile.DTO.DTO
         /// agentId
         /// </summary>
         public long? AgentId { get; set; }
+        public string UID { get; set; }
     }
 }

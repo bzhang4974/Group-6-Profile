@@ -26,11 +26,9 @@ namespace Group6_Profile.web.Controllers
         public ActionResult DownFile(long key)
         {
             SFileDTO upFile = _fileService.GetDataAsync(key);
-            if (upFile == null)
-            {
-                return null;
-            }
-            string oracleFile = PubPath.UpLoadPath + upFile.FilePath;
+           
+
+            var contentTypeStr = "image/jpeg";
             //pic type
             var contentTypDict = new Dictionary<string, string> {
                 {"jpg","image/jpeg"},
@@ -45,10 +43,14 @@ namespace Group6_Profile.web.Controllers
                 {"wbmp","image//vnd.wap.wbmp"},
                 {"rp","image/vnd.rn-realpix"}
             };
-            var contentTypeStr = "image/jpeg";
-            var imgTypeSplit = upFile.FileType.Split('.');
-            var imgType = imgTypeSplit[imgTypeSplit.Length - 1].ToLower();
+            string oracleFile = _webHostEnvironment.WebRootFileProvider.GetFileInfo("images/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg")?.PhysicalPath;
+            if (upFile != null)
             {
+                oracleFile = PubPath.UpLoadPath + upFile.FilePath;
+
+                var imgTypeSplit = upFile.FileType.Split('.');
+                var imgType = imgTypeSplit[imgTypeSplit.Length - 1].ToLower();
+
                 contentTypeStr = contentTypDict[imgType];
             }
             using (var sw = new FileStream(oracleFile, FileMode.Open))
@@ -91,8 +93,50 @@ namespace Group6_Profile.web.Controllers
 
                 contentTypeStr = contentTypDict[imgType];
             }
-           
-             
+
+
+            using (var sw = new FileStream(oracleFile, FileMode.Open))
+            {
+                var bytes = new byte[sw.Length];
+                sw.Read(bytes, 0, bytes.Length);
+                sw.Close();
+                return new FileContentResult(bytes, contentTypeStr);
+            }
+        }
+        /// <summary>
+        /// download picture
+        /// </summary>
+        /// <param name="key">uid Id</param>
+        /// <returns></returns>
+        public ActionResult DownFile3(string uid)
+        {
+            var contentTypeStr = "image/jpeg";
+            var contentTypDict = new Dictionary<string, string> {
+                {"jpg","image/jpeg"},
+                {"jpeg","image/jpeg"},
+                {"jpe","image/jpeg"},
+                {"png","image/png"},
+                {"gif","image/gif"},
+                {"ico","image/x-ico"},
+                {"tif","image/tiff"},
+                {"tiff","image/tiff"},
+                {"fax","image/fax"},
+                {"wbmp","image//vnd.wap.wbmp"},
+                {"rp","image/vnd.rn-realpix"}
+            };
+            SFileDTO upFile = _fileService.GetDataByUserdAsync(uid);
+            string oracleFile = _webHostEnvironment.WebRootFileProvider.GetFileInfo("images/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg")?.PhysicalPath;
+            if (upFile != null)
+            {
+                oracleFile = PubPath.UpLoadPath + upFile.FilePath;
+
+                var imgTypeSplit = upFile.FileType.Split('.');
+                var imgType = imgTypeSplit[imgTypeSplit.Length - 1].ToLower();
+
+                contentTypeStr = contentTypDict[imgType];
+            }
+
+
             using (var sw = new FileStream(oracleFile, FileMode.Open))
             {
                 var bytes = new byte[sw.Length];
